@@ -8,18 +8,31 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
+  <form>
+    <input name="query" value="${param.query}">
+    <button>Search</button>
+  </form>
+  <c:if test="${products.size() > 0}">
   <table>
     <thead>
       <tr>
         <td>Image</td>
-        <td>Description</td>
-        <td class="price">Price</td>
+        <td>
+          Description
+          <tags:sortLink sort="description" order="asc" symbol="⇑"/>
+          <tags:sortLink sort="description" order="desc" symbol="⇓"/>
+        </td>
+        <td class="price">
+          Price
+          <tags:sortLink sort="price" order="asc" symbol="⇑"/>
+          <tags:sortLink sort="price" order="desc" symbol="⇓"/>
+        </td>
       </tr>
     </thead>
     <c:forEach var="product" items="${products}">
       <tr>
         <td>
-          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+          <img class="product-tile" src="${product.imageUrl}" alt="Cannot load img">
         </td>
         <td>${product.description}</td>
         <td class="price">
@@ -28,4 +41,8 @@
       </tr>
     </c:forEach>
   </table>
+  </c:if>
+  <c:if test="${products.size() == 0}">
+    <p>No results were found for your search</p>
+  </c:if>
 </tags:master>
