@@ -41,6 +41,7 @@
         </td>
         <td class="price tooltip">
           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+          <tags:tooltip description="${product.description}" histories="${product.histories}"/>
         </td>
       </tr>
     </c:forEach>
