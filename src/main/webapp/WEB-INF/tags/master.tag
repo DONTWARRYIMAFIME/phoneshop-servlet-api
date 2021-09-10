@@ -8,14 +8,19 @@
   <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
 </head>
 <body class="product-list">
-  <header>
-    <a href="${pageContext.servletContext.contextPath}">
-      <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop
-    </a>
-  </header>
-  <main>
-    <jsp:doBody/>
-  </main>
+  <div class="wrapper">
+    <header>
+      <a href="${pageContext.servletContext.contextPath}">
+        <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
+        PhoneShop
+      </a>
+    </header>
+    <main>
+      <jsp:doBody/>
+    </main>
+    <footer>
+      <p>(c) Expert - Soft</p>
+    </footer>
+  </div>
 </body>
 </html>

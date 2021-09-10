@@ -34,8 +34,12 @@
         <td>
           <img class="product-tile" src="${product.imageUrl}" alt="Cannot load img">
         </td>
-        <td>${product.description}</td>
-        <td class="price">
+        <td>
+            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
+              ${product.description}
+            </a>
+        </td>
+        <td class="price tooltip">
           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
         </td>
       </tr>
