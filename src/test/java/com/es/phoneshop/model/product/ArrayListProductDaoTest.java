@@ -246,5 +246,22 @@ public class ArrayListProductDaoTest {
         assertEquals(product2, products.get(2));
     }
 
+    @Test
+    public void testPriceHistory() {
+        Product product = new Product();
+        product.setId(100L);
+
+        productDao.save(product);
+
+        assertEquals(0, productDao.getProduct(100L).get().getHistories().size());
+
+        product.setPrice(BigDecimal.valueOf(100));
+        product.setPrice(BigDecimal.valueOf(101));
+        product.setPrice(BigDecimal.valueOf(102));
+        product.setPrice(BigDecimal.valueOf(103));
+        product.setPrice(BigDecimal.valueOf(104));
+
+        assertEquals(5, productDao.getProduct(100L).get().getHistories().size());
+    }
 
 }
