@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ArrayListProductDao implements ProductDao {
 
     private long maxId;
-    private final List<Product> products;
+    private List<Product> products;
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
     private final Lock writeLock = lock.writeLock();
@@ -72,7 +72,7 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
         List<Product> searchedProducts = findProducts();
 
-        if (query != null && query.isEmpty()) {
+        if (query != null && !query.isEmpty()) {
             searchedProducts = filterProducts(searchedProducts, query);
         }
 

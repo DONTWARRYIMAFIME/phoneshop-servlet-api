@@ -58,8 +58,6 @@ public class ProductDetailPageServletTest {
 
     @Test
     public void testGetProductWithCorrectPathParam() throws ServletException, IOException {
-        product1.setId(101L);
-
         when(request.getPathInfo()).thenReturn("/101");
         when(productDao.getProduct(101L)).thenReturn(Optional.of(product1));
 

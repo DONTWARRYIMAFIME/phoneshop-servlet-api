@@ -13,7 +13,9 @@ public class Product {
 
     private final SortedSet<PriceHistoryEntry> histories = new TreeSet<>(Comparator.comparing(PriceHistoryEntry::getDate).reversed());
 
-    public Product() {}
+    public Product() {
+        this.histories.add(new PriceHistoryEntry(LocalDate.now(), null, null));
+    }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
