@@ -6,7 +6,7 @@ public enum SortOrder {
     ASC,
     DESC;
 
-    public static SortOrder getEnum(String order) {
+    public static SortOrder safeValueOf(String order) {
         return Stream
                 .of(values())
                 .filter(value -> value.toString().equalsIgnoreCase(order))

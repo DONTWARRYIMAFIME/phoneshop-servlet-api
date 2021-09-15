@@ -63,34 +63,27 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .collect(Collectors.toList());
-        }
-        finally {
+        } finally {
             readLock.unlock();
         }
     }
 
     @Override
     public List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder) {
-        readLock.lock();
-        try {
-            List<Product> searchedProducts = findProducts();
+        List<Product> searchedProducts = findProducts();
 
-            if (query != null && !"".equals(query)) {
-                searchedProducts = findQueryProducts(searchedProducts, query);
-            }
-
-            if (sortField != null && sortOrder != null) {
-                searchedProducts = findSortedProducts(searchedProducts, sortField, sortOrder);
-            }
-
-            return searchedProducts;
+        if (query != null && query.isEmpty()) {
+            searchedProducts = filterProducts(searchedProducts, query);
         }
-        finally {
-            readLock.unlock();
+
+        if (sortField != null && sortOrder != null) {
+            searchedProducts = sortProducts(searchedProducts, sortField, sortOrder);
         }
+
+        return searchedProducts;
     }
 
-    private List<Product> findQueryProducts(List<Product> products, String query) {
+    private List<Product> filterProducts(List<Product> products, String query) {
         readLock.lock();
         try {
             String[] queries = query.toUpperCase(Locale.ROOT).split("\\s+");
@@ -105,18 +98,15 @@ public class ArrayListProductDao implements ProductDao {
                     .filter(p -> countMatchesFunction.apply(p) != 0)
                     .sorted(Comparator.comparing(countMatchesFunction).reversed())
                     .collect(Collectors.toList());
-        }
-        finally {
+        } finally {
             readLock.unlock();
         }
     }
 
-    private List<Product> findSortedProducts(List<Product> products, SortField sortField, SortOrder sortOrder) {
+    private List<Product> sortProducts(List<Product> products, SortField sortField, SortOrder sortOrder) {
         readLock.lock();
         try {
-            Comparator<Product> comparator = sortField == SortField.DESCRIPTION
-                    ? Comparator.comparing(Product::getDescription)
-                    : Comparator.comparing(Product::getPrice);
+            Comparator<Product> comparator = sortField.getComparator();
 
             if (sortOrder == SortOrder.DESC) {
                 comparator = comparator.reversed();
@@ -126,8 +116,7 @@ public class ArrayListProductDao implements ProductDao {
                     .stream()
                     .sorted(comparator)
                     .collect(Collectors.toList());
-        }
-        finally {
+        } finally {
             readLock.unlock();
         }
     }
@@ -169,8 +158,7 @@ public class ArrayListProductDao implements ProductDao {
         writeLock.lock();
         try {
             products.removeIf(product -> Objects.equals(id, product.getId()));
-        }
-        finally {
+        } finally {
             writeLock.unlock();
         }
     }
