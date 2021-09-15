@@ -7,6 +7,7 @@ import com.es.phoneshop.model.product.dao.ProductDao;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Currency;
 import java.util.List;
 import java.util.Random;
@@ -60,8 +61,13 @@ public class DemoDataServletContextListener implements ServletContextListener {
             int historyLength = random.nextInt(8) + 1;
 
             for (int i = 0; i < historyLength; i++) {
-                BigDecimal price = BigDecimal.valueOf(random.nextInt(1500) + 1);
-                product.setPrice(price);
+                BigDecimal price = BigDecimal.valueOf(random.nextInt(1500) + 1L);
+
+                int year = random.nextInt(20) + 2000;
+                int month = random.nextInt(12) + 1;
+                int day = random.nextInt(28) + 1;
+
+                product.setPrice(price, LocalDate.of(year, month, day));
             }
         });
 

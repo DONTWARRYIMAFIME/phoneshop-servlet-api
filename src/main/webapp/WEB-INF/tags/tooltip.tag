@@ -1,6 +1,6 @@
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="description" required="true" %>
-<%@ attribute name="histories" required="true" type="java.util.ArrayList<com.es.phoneshop.model.product.PriceHistory>" %>
+<%@ attribute name="histories" required="true" type="java.util.Set<com.es.phoneshop.model.product.PriceHistoryEntry>" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -11,8 +11,7 @@
         <div class="tooltip__col">Start date</div>
         <div class="tooltip__col">Price</div>
     </div>
-    <c:forEach var="i" begin="0" end="${histories.size() - 1}" step="1" >
-        <c:set var="history" value="${histories.get(histories.size() - 1 - i)}" />
+    <c:forEach var="history" items="${histories}" >
         <div class="tooltip__row">
             <div class="tooltip__col">${history.date}</div>
             <div class="tooltip__col">
