@@ -1,18 +1,14 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.exception.EntityNotFoundException;
+import com.es.phoneshop.exception.IllegalProductQuantityException;
+import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
 
 public class DefaultCartService implements CartService {
 
-    private Cart cart = new Cart();
-    private final ProductDao productDao;
+    private final Cart cart = new Cart();
 
-    private DefaultCartService() {
-        productDao = ArrayListProductDao.getInstance();
-    }
+    private DefaultCartService() {}
 
     public static CartService getInstance() {
         return Holder.cartService;
@@ -28,12 +24,22 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public void add(Long productId, int quantity) {
-        Product product = productDao
-                .getProduct(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product", productId));
+    public void add(Product product, int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalProductQuantityException();
+        }
 
-        cart.getItems().add(new CartItem(product, quantity));
+        Long id = product.getId();
+
+        CartItem cartItem = cart.getItems().get(id);
+        int inCartQuantity = cartItem != null ? cartItem.getQuantity() : 0;
+        int requestQuantity = inCartQuantity + quantity;
+
+        if (requestQuantity > product.getStock()) {
+            throw new OutOfStockException(requestQuantity, product.getStock());
+        }
+
+        cart.getItems().put(id, new CartItem(product, requestQuantity));
     }
 
 }
