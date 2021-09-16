@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 public class ProductDetailPageServlet extends HttpServlet {
 
@@ -42,15 +45,17 @@ public class ProductDetailPageServlet extends HttpServlet {
 
         String quantityString = request.getParameter("quantity");
         try {
-            int quantity = Integer.parseInt(quantityString);
+            Locale locale = request.getLocale();
+            NumberFormat format = NumberFormat.getInstance(locale);
+            int quantity = format.parse(quantityString).intValue();
 
             cartService.add(cart, product, quantity);
             response.sendRedirect(request.getContextPath() + "/products/" + product.getId() + "?message=Added to cart successfully");
+        } catch (ParseException e) {
+            request.setAttribute("error", "Not a number");
+            doForward(cart, product, request, response);
         } catch (IllegalProductQuantityException | OutOfStockException e) {
             request.setAttribute("error", e.getMessage());
-            doForward(cart, product, request, response);
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Not a number");
             doForward(cart, product, request, response);
         }
 
