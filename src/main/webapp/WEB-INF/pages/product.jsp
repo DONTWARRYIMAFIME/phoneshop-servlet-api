@@ -8,7 +8,7 @@
     <p>
        Cart: ${cart}
     </p>
-    <c:if test="${not empty param.message}">
+    <c:if test="${empty error and not empty param.message}">
         <p class="success">
             ${param.message}
         </p>
@@ -42,7 +42,7 @@
             <tr>
                 <td>Quantity</td>
                 <td>
-                    <input class="quantity" type="number" name="quantity" value="${not empty error ? param.quantity : 1}">
+                    <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}">
                     <button>Add to cart</button>
                     <c:if test="${not empty error}">
                         <p class="error">
