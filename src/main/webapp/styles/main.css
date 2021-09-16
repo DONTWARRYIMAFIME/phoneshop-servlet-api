@@ -21,7 +21,7 @@ td {
   border : 1px solid gray;
   vertical-align: top;
 }
-.price {
+.price .quantity {
   text-align: right;
 }
 img.product-tile {
@@ -59,4 +59,8 @@ footer {
 
 .error {
   color: #f00;
+}
+
+.success {
+  color: #0a0;
 }
