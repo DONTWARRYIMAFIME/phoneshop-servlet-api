@@ -29,7 +29,7 @@ public class ProductDetailPageServlet extends HttpServlet {
          * Redirecting URL without product id (phoneshop-servlet-api/products/ -> phoneshop-servlet-api/products)
          */
         if (pathParams.length == 0) {
-            request.getRequestDispatcher(request.getContextPath() + "/products").forward(request, response);
+            request.getRequestDispatcher("/products").forward(request, response);
         } else {
             Long id = Long.parseLong(pathParams[1]);
 
