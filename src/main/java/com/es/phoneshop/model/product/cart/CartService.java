@@ -8,6 +8,6 @@ public interface CartService {
 
     Cart getCart();
 
-    void add(Product product, int quantity) throws OutOfStockException, IllegalProductQuantityException;
+    void add(Cart cart, Product product, int quantity) throws OutOfStockException, IllegalProductQuantityException;
 
 }

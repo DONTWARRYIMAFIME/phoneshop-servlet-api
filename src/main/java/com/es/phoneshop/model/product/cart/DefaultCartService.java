@@ -4,9 +4,13 @@ import com.es.phoneshop.exception.IllegalProductQuantityException;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 public class DefaultCartService implements CartService {
 
-    private final Cart cart = new Cart();
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+    private final Lock writeLock = lock.writeLock();
 
     private DefaultCartService() {}
 
@@ -20,26 +24,37 @@ public class DefaultCartService implements CartService {
 
     @Override
     public Cart getCart() {
-        return cart;
+        writeLock.lock();
+        try {
+            return new Cart();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public void add(Product product, int quantity) {
+    public void add(Cart cart, Product product, int quantity) {
         if (quantity <= 0) {
             throw new IllegalProductQuantityException();
         }
 
-        Long id = product.getId();
+        writeLock.lock();
+        try {
+            Long id = product.getId();
 
-        CartItem cartItem = cart.getItems().get(id);
-        int inCartQuantity = cartItem != null ? cartItem.getQuantity() : 0;
-        int requestQuantity = inCartQuantity + quantity;
+            CartItem cartItem = cart.getItems().get(id);
+            int inCartQuantity = cartItem != null ? cartItem.getQuantity() : 0;
+            int requestQuantity = inCartQuantity + quantity;
 
-        if (requestQuantity > product.getStock()) {
-            throw new OutOfStockException(requestQuantity, product.getStock());
+            if (requestQuantity > product.getStock()) {
+                throw new OutOfStockException(requestQuantity, product.getStock());
+            }
+
+            cart.getItems().put(id, new CartItem(product, requestQuantity));
+        } finally {
+            writeLock.unlock();
         }
 
-        cart.getItems().put(id, new CartItem(product, requestQuantity));
     }
 
 }
