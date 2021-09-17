@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -34,14 +33,14 @@ public class ProductDetailPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = getProductByPathParamId(request);
-        Cart cart = getCartFromSession(request);
+        Cart cart = cartService.getCart(request);
         doForward(cart, product, request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = getProductByPathParamId(request);
-        Cart cart = getCartFromSession(request);
+        Cart cart = cartService.getCart(request);
 
         String quantityString = request.getParameter("quantity");
         try {
@@ -75,11 +74,6 @@ public class ProductDetailPageServlet extends HttpServlet {
         request.setAttribute("cart", cart);
         request.setAttribute("product", product);
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
-    }
-
-    private Cart getCartFromSession(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return (Cart)session.getAttribute("cart");
     }
 
 }
