@@ -55,6 +55,7 @@ footer {
   margin: 15px 0px 15px 0px;
   color: #fff;
   background-color: #000;
+  text-decoration: none;
 }
 
 .error {
@@ -63,4 +64,19 @@ footer {
 
 .success {
   color: #0a0;
+}
+
+.viewed__row {
+  display: flex;
+}
+
+.viewed__col {
+  padding: 10px;
+  margin: 0 5px 0 0 ;
+
+  width: 100px;
+  border: 1px solid #ccc;
+
+  align-items: center;
+  text-align: center;
 }
