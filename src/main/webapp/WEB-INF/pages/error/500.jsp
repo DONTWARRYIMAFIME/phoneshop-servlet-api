@@ -9,5 +9,5 @@
 
     <h4>Try again later or contact with administrators</h4>
 
-    <button class="button-back" onClick="javascript:history.go(-1)" type="button">Go Back</button>
+    <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
 </tags:master>

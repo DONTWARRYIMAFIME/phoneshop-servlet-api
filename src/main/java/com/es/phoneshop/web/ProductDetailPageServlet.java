@@ -9,6 +9,9 @@ import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.viewed.DefaultRecentlyViewedHistory;
+import com.es.phoneshop.model.product.viewed.RecentlyViewedHistory;
+import com.es.phoneshop.model.product.viewed.RecentlyViewedHistoryService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,17 +26,21 @@ public class ProductDetailPageServlet extends HttpServlet {
 
     private ProductDao productDao;
     private CartService cartService;
+    private RecentlyViewedHistoryService viewedService;
 
     @Override
     public void init() {
         productDao = ArrayListProductDao.getInstance();
         cartService = DefaultCartService.getInstance();
+        viewedService = DefaultRecentlyViewedHistory.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = getProductByPathParamId(request);
         Cart cart = cartService.getCart(request);
+        RecentlyViewedHistory viewed = viewedService.getRecentlyViewedHistory(request);
+        viewedService.add(viewed, product);
         doForward(cart, product, request, response);
     }
 

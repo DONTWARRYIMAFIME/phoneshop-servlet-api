@@ -52,8 +52,7 @@
                 </td>
             </tr>
         </table>
-
     </form>
 
-    <button class="button-back" onClick="javascript:history.go(-1)" type="button">Go Back</button>
+    <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
 </tags:master>
