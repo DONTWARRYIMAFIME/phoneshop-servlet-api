@@ -1,29 +1,29 @@
 package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
-import java.util.Currency;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Product {
     private Long id;
     private String code;
     private String description;
-    /** null means there is no price because the product is outdated or new */
-    private BigDecimal price;
-    /** can be null if the price is null */
-    private Currency currency;
     private int stock;
     private String imageUrl;
 
+    private final SortedSet<PriceHistoryEntry> histories = new TreeSet<>(Comparator.comparing(PriceHistoryEntry::getDate).reversed());
+
     public Product() {
+        this.histories.add(new PriceHistoryEntry(LocalDate.now(), null, null));
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.code = code;
         this.description = description;
-        this.price = price;
-        this.currency = currency;
         this.stock = stock;
         this.imageUrl = imageUrl;
+
+        this.histories.add(new PriceHistoryEntry(LocalDate.now(), price, currency));
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -56,19 +56,23 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return histories.first().getPrice();
     }
 
     public void setPrice(BigDecimal price) {
-        this.price = price;
+        this.histories.add(new PriceHistoryEntry(LocalDate.now(), price, getCurrency()));
+    }
+
+    public void setPrice(BigDecimal price, LocalDate date) {
+        this.histories.add(new PriceHistoryEntry(date, price, getCurrency()));
     }
 
     public Currency getCurrency() {
-        return currency;
+        return histories.first().getCurrency();
     }
 
     public void setCurrency(Currency currency) {
-        this.currency = currency;
+        histories.first().setCurrency(currency);
     }
 
     public int getStock() {
@@ -86,4 +90,9 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public Set<PriceHistoryEntry> getHistories() {
+        return Collections.unmodifiableSet(histories);
+    }
+
 }
