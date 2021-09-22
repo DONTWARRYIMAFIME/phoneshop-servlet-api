@@ -1,10 +1,10 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.exception.IllegalProductQuantityException;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -29,7 +29,8 @@ public class DefaultCartService implements CartService {
         try {
             Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
             if (cart == null) {
-                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart = new Cart());
+                cart = new Cart();
+                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
             }
             return cart;
         } finally {
@@ -40,17 +41,21 @@ public class DefaultCartService implements CartService {
     @Override
     public void add(Cart cart, Product product, int quantity) {
         if (quantity <= 0) {
-            throw new IllegalProductQuantityException();
+            throw new IllegalArgumentException("Quantity must be more than 0");
         }
 
         writeLock.lock();
         try {
             Long id = product.getId();
 
-            CartItem cartItem = cart.getItems().get(id);
-            int inCartQuantity = cartItem != null ? cartItem.getQuantity() : 0;
-            int requestQuantity = inCartQuantity + quantity;
+            int inCartQuantity = 0;
+            Map<Long, CartItem> cartItems = cart.getItems();
 
+            if (cartItems.containsKey(id)) {
+                inCartQuantity = cartItems.get(id).getQuantity();
+            }
+
+            int requestQuantity = inCartQuantity + quantity;
             if (requestQuantity > product.getStock()) {
                 throw new OutOfStockException(requestQuantity, product.getStock());
             }

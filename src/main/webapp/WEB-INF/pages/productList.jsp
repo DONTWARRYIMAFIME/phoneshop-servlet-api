@@ -50,24 +50,5 @@
   <c:if test="${products.size() == 0}">
     <p>No results were found for your search</p>
   </c:if>
-  <c:if test="${not empty sessionScope.viewed}">
-    <h2>Recently viewed</h2>
-    <div class="viewed__row">
-      <c:forEach var="product" items="${sessionScope.viewed.products}">
-        <div class="viewed__col">
-          <div>
-            <img class="product-tile" src="${product.imageUrl}">
-          </div>
-          <div>
-            <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-              ${product.description}
-            </a>
-          </div>
-          <div>
-            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-          </div>
-        </div>
-      </c:forEach>
-    </div>
-  </c:if>
+  <tags:recentlyViewed viewed="${viewed}"/>
 </tags:master>
