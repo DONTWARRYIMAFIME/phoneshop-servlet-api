@@ -3,12 +3,12 @@ package com.es.phoneshop.model.product.viewed;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Deque;
+import java.util.LinkedList;
 
 public interface RecentlyViewedHistoryService {
 
-    Deque<Product> getRecentlyViewedHistory(HttpServletRequest request);
+    LinkedList<Product> getRecentlyViewedHistory(HttpServletRequest request);
 
-    void addProduct(Deque<Product> viewed, Product product);
+    void addProduct(LinkedList<Product> viewed, Product product);
 
 }

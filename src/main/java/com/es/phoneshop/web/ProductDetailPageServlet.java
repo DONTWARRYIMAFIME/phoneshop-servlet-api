@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Locale;
 
 public class ProductDetailPageServlet extends HttpServlet {
@@ -37,7 +38,7 @@ public class ProductDetailPageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = getProductByPathParamId(request);
         Cart cart = cartService.getCart(request);
-        Deque<Product> viewed = viewedService.getRecentlyViewedHistory(request);
+        LinkedList<Product> viewed = viewedService.getRecentlyViewedHistory(request);
         viewedService.addProduct(viewed, product);
         doForward(viewed, cart, product, request, response);
     }
