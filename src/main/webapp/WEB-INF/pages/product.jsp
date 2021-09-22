@@ -55,4 +55,5 @@
     </form>
 
     <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
+    <tags:recentlyViewed viewed="${viewed}"/>
 </tags:master>

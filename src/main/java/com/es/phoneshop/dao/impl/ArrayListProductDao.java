@@ -1,8 +1,9 @@
-package com.es.phoneshop.model.product.dao;
+package com.es.phoneshop.dao.impl;
 
+import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.sort.SortField;
-import com.es.phoneshop.model.product.sort.SortOrder;
+import com.es.phoneshop.model.sort.SortField;
+import com.es.phoneshop.model.sort.SortOrder;
 
 import java.util.ArrayList;
 import java.util.Arrays;

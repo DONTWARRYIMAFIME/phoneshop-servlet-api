@@ -1,13 +1,11 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.exception.EntityNotFoundException;
-import com.es.phoneshop.exception.IllegalProductQuantityException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartService;
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.viewed.RecentlyViewedHistory;
-import com.es.phoneshop.model.product.viewed.RecentlyViewedHistoryService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.service.RecentlyViewedHistoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -45,7 +44,7 @@ public class ProductDetailPageServletTest {
     @Mock
     private Cart cart;
     @Mock
-    private RecentlyViewedHistory viewed;
+    private LinkedList<Product> viewed;
     @Mock
     private Product product;
 
@@ -82,6 +81,7 @@ public class ProductDetailPageServletTest {
         verify(cartService, times(1)).getCart(request);
         verify(viewedService, times(1)).getRecentlyViewedHistory(request);
 
+        verify(request).setAttribute("viewed", viewed);
         verify(request).setAttribute("product", product);
         verify(request).setAttribute("cart", cart);
     }
@@ -107,7 +107,7 @@ public class ProductDetailPageServletTest {
     public void testIllegalProductQuantityExceptionHandle() throws ServletException, IOException {
         when(request.getParameter("quantity")).thenReturn("0");
 
-        doThrow(IllegalProductQuantityException.class).when(cartService).add(cart, product, 0);
+        doThrow(IllegalArgumentException.class).when(cartService).add(cart, product, 0);
 
         servlet.doPost(request, response);
 
