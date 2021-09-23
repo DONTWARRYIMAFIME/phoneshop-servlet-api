@@ -4,7 +4,7 @@ import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -48,12 +48,10 @@ public class DefaultCartService implements CartService {
         try {
             Long id = product.getId();
 
-            int inCartQuantity = 0;
-            Map<Long, CartItem> cartItems = cart.getItems();
-
-            if (cartItems.containsKey(id)) {
-                inCartQuantity = cartItems.get(id).getQuantity();
-            }
+            int inCartQuantity = Optional
+                    .ofNullable(cart.getItems().get(id))
+                    .map(CartItem::getQuantity)
+                    .orElse(0);
 
             int requestQuantity = inCartQuantity + quantity;
             if (requestQuantity > product.getStock()) {
