@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.viewed.RecentlyViewedHistoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +14,10 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -31,23 +34,29 @@ public class ProductListPageServletTest {
     @Mock
     private ProductDao productDao;
     @Mock
-    private Product testProduct;
+    private Product product;
+    @Mock
+    private RecentlyViewedHistoryService viewedService;
+    @Mock
+    private LinkedList<Product> viewed;
 
     @InjectMocks
     private final ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
     public void setup(){
-        when(productDao.findProducts()).thenReturn(Collections.singletonList(testProduct));
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(productDao.findProducts(null, null, null)).thenReturn(List.of(product));
+        when(viewedService.getRecentlyViewedHistory(request)).thenReturn(viewed);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
 
+        verify(request).setAttribute("products", List.of(product));
+        verify(request).setAttribute("viewed", viewed);
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute("products", Collections.singletonList(testProduct));
     }
 
 }

@@ -1,79 +1,97 @@
 package com.es.phoneshop.model.product.cart;
 
-import com.es.phoneshop.exception.IllegalProductQuantityException;
 import com.es.phoneshop.exception.OutOfStockException;
 import com.es.phoneshop.model.product.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultCartServiceTest {
 
     @Mock
-    private Product product;
-    @Mock
     private HttpSession session;
     @Mock
     private HttpServletRequest request;
+    @Mock
+    private Cart cart;
+    @Mock
+    private Product product1;
+    @Mock
+    private Product product2;
 
+    @InjectMocks
     private final CartService cartService = DefaultCartService.getInstance();
-    private final Cart cart = new Cart();
+
+    private static final String ATTRIBUTE_NAME = DefaultCartService.class.getName() + ".cart";
+
+    private void setupProduct(Product product, Long id, int stock) {
+        when(product.getId()).thenReturn(id);
+        when(product.getStock()).thenReturn(stock);
+    }
 
     @Before
     public void setup() {
-        when(product.getId()).thenReturn(101L);
-        when(product.getStock()).thenReturn(101);
+        setupProduct(product1, 101L, 101);
+        setupProduct(product2, 102L, 102);
+    }
+
+    @Test
+    public void testAddProductToEmptyCart() {
         when(request.getSession()).thenReturn(session);
-    }
-
-    @Test
-    public void testGetCart() {
+        when(session.getAttribute(ATTRIBUTE_NAME)).thenReturn(null);
         Cart cart = cartService.getCart(request);
-        assertNotNull(cart);
+        cartService.add(cart, product1, 5);
+        verify(session, times(1)).setAttribute(ATTRIBUTE_NAME, new Cart(Map.of(product1.getId(), new CartItem(product1, 5))));
+        assertEquals(product1, cart.getItems().get(product1.getId()).getProduct());
     }
 
     @Test
-    public void testAddToCartCorrectProduct() {
-        cartService.add(cart, product, 1);
-        assertEquals(1L, cart.getItems().get(product.getId()).getQuantity());
-        assertNotNull(cart.getItems().get(product.getId()));
+    public void testAddProductToNonEmptyCart() {
+        Cart cart = new Cart(Map.of(product1.getId(), new CartItem(product1, 5)));
+        cartService.add(cart, product2, 4);
+
+        Map<Long, CartItem> expected = Map.of(
+                product2.getId(), new CartItem(product2, 4),
+                product1.getId(), new CartItem(product1, 5)
+        );
+
+        assertEquals(2, cart.getItems().size());
+        assertEquals(expected, cart.getItems());
     }
 
     @Test
     public void testAddToCartExistingProduct() {
-        cartService.add(cart, product, 1);
-        assertEquals(1L, cart.getItems().get(product.getId()).getQuantity());
-        cartService.add(cart, product, 5);
-        assertEquals(6L, cart.getItems().get(product.getId()).getQuantity());
+        Cart cart = new Cart(Map.of(product1.getId(), new CartItem(product1, 5)));
+        cartService.add(cart, product1, 4);
+        assertEquals(9L, cart.getItems().get(product1.getId()).getQuantity());
     }
 
     @Test(expected = OutOfStockException.class)
     public void testAddToCartTooMuchExistingProduct() {
-        cartService.add(cart, product, 1);
-        assertEquals(1L, cart.getItems().get(product.getId()).getQuantity());
-        cartService.add(cart, product, 100);
-        assertEquals(101L, cart.getItems().get(product.getId()).getQuantity());
-        cartService.add(cart, product, 1);
+        Cart cart = new Cart(Map.of(product1.getId(), new CartItem(product1, 5)));
+        cartService.add(cart, product1, 97);
+        assertEquals(102L, cart.getItems().get(product1.getId()).getQuantity());
     }
 
     @Test(expected = OutOfStockException.class)
     public void testAddToCartTooMuchProducts() {
-        cartService.add(cart, product, 102);
+        cartService.add(cart, product1, 102);
     }
 
-    @Test(expected = IllegalProductQuantityException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAddToCartProductWithInvalidQuantity() {
-        cartService.add(cart, product, 0);
+        cartService.add(cart, product1, 0);
     }
 
 }

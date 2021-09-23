@@ -1,7 +1,6 @@
 package com.es.phoneshop.model.product.viewed;
 
 import com.es.phoneshop.model.product.Product;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -9,12 +8,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultRecentlyViewedHistoryTest {
@@ -27,81 +26,47 @@ public class DefaultRecentlyViewedHistoryTest {
     private Product product3;
     @Mock
     private Product product4;
-    @Mock
-    private Product product5;
-    @Mock
-    private Product product6;
 
     @Mock
     private HttpSession session;
     @Mock
     private HttpServletRequest request;
 
-    private final RecentlyViewedHistoryService viewedService = DefaultRecentlyViewedHistory.getInstance();
-    private final RecentlyViewedHistory viewed = new RecentlyViewedHistory();
+    private final RecentlyViewedHistoryService viewedService = DefaultRecentlyViewedHistoryService.getInstance();
+    private static final String ATTRIBUTE_NAME = DefaultRecentlyViewedHistoryService.class.getName() + ".viewed";
 
-    @Before
-    public void setup() {
+    @Test
+    public void testAddProductToEmptyHistory() {
         when(request.getSession()).thenReturn(session);
-    }
-
-    @Test
-    public void testGetRecentlyViewedHistory() {
-        RecentlyViewedHistory viewed = viewedService.getRecentlyViewedHistory(request);
+        when(session.getAttribute(ATTRIBUTE_NAME)).thenReturn(null);
+        LinkedList<Product> viewed = viewedService.getRecentlyViewedHistory(request);
         assertNotNull(viewed);
+        viewedService.addProduct(viewed, product1);
+        verify(session, times(1)).setAttribute(ATTRIBUTE_NAME, List.of(product1));
     }
 
     @Test
-    public void testAddToRecentViewedHistory() {
-        assertFalse(viewed.getProducts().contains(product1));
-        assertFalse(viewed.getProducts().contains(product2));
-        assertFalse(viewed.getProducts().contains(product3));
-
-        viewed.addProduct(product1);
-        viewed.addProduct(product2);
-        viewed.addProduct(product3);
-
-        assertTrue(viewed.getProducts().contains(product1));
-        assertTrue(viewed.getProducts().contains(product2));
-        assertTrue(viewed.getProducts().contains(product3));
-
-        assertEquals(product3, viewed.getProducts().getFirst());
-        assertEquals(product1, viewed.getProducts().getLast());
+    public void testAddProductToNonEmptyHistory() {
+        LinkedList<Product> viewed = new LinkedList<>(List.of(product1, product2));
+        viewedService.addProduct(viewed, product3);
+        assertEquals(List.of(product3, product1, product2), viewed);
     }
 
     @Test
-    public void testRecentViewedHistorySize() {
-        viewed.addProduct(product1);
-        viewed.addProduct(product2);
-        viewed.addProduct(product3);
-        viewed.addProduct(product4);
-        viewed.addProduct(product5);
-        viewed.addProduct(product6);
-
-        assertEquals(3, viewed.getProducts().size());
+    public void testMaxHistorySize() {
+        LinkedList<Product> viewed = new LinkedList<>(List.of(product1, product2, product3));
+        viewedService.addProduct(viewed, product4);
+        assertEquals(3, viewed.size());
+        assertEquals(List.of(product4, product1, product2), viewed);
     }
 
     @Test
-    public void testAddingTheSameProduct() {
-        viewed.addProduct(product1);
-        viewed.addProduct(product1);
-        viewed.addProduct(product1);
-
-        assertEquals(1, viewed.getProducts().size());
-
-        viewed.addProduct(product2);
-        viewed.addProduct(product3);
-
-        assertEquals(product3, viewed.getProducts().getFirst());
-        assertEquals(product1, viewed.getProducts().getLast());
-
-        viewed.addProduct(product1);
-        viewed.addProduct(product1);
-        viewed.addProduct(product1);
-
-        assertEquals(3, viewed.getProducts().size());
-        assertEquals(product1, viewed.getProducts().getFirst());
-        assertEquals(product2, viewed.getProducts().getLast());
+    public void testAddDuplicatedProductsToHistory() {
+        LinkedList<Product> viewed = new LinkedList<>(List.of(product1, product2));
+        viewedService.addProduct(viewed, product2);
+        viewedService.addProduct(viewed, product1);
+        assertEquals(2, viewed.size());
+        assertEquals(List.of(product1, product2), viewed);
     }
 
 }
