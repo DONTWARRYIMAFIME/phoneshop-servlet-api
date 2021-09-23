@@ -57,10 +57,10 @@ public class DefaultCartService implements CartService {
 
             int requestQuantity = inCartQuantity + quantity;
             if (requestQuantity > product.getStock()) {
-                throw new OutOfStockException(requestQuantity, product.getStock());
+                throw new OutOfStockException(quantity, product.getStock() - inCartQuantity);
             }
 
-            cart.getItems().put(id, new CartItem(product, requestQuantity));
+            cart.addItem(id, new CartItem(product, requestQuantity));
         } finally {
             writeLock.unlock();
         }
