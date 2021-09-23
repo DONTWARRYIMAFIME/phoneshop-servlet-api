@@ -68,4 +68,22 @@ public class DefaultCartService implements CartService {
 
     }
 
+    @Override
+    public void update(Cart cart, Product product, int quantity) throws OutOfStockException {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be more than 0");
+        }
+
+        if (quantity > product.getStock()) {
+            throw new OutOfStockException(quantity, product.getStock());
+        }
+
+        writeLock.lock();
+        try {
+            cart.addItem(product.getId(), new CartItem(product, quantity));
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
 }

@@ -10,7 +10,7 @@
     </p>
     <c:if test="${empty error and not empty param.message}">
         <p class="success">
-                ${param.message}
+            ${param.message}
         </p>
     </c:if>
     <c:if test="${not empty error}">
@@ -19,7 +19,7 @@
         </p>
     </c:if>
     <p>
-            ${product.description}
+        ${product.description}
     </p>
     <form method="POST">
         <table>

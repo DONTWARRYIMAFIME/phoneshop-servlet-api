@@ -12,4 +12,5 @@ public interface CartService {
 
     void add(Cart cart, Product product, int quantity) throws OutOfStockException;
 
+    void update(Cart cart, Product product, int quantity) throws OutOfStockException;
 }
