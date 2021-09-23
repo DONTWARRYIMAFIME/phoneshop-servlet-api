@@ -1,10 +1,12 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Currency;
+import java.util.Objects;
 
-public class PriceHistoryEntry {
+public class PriceHistoryEntry implements Comparable<PriceHistoryEntry>, Serializable {
     private final LocalDate date;
     /** null means LocalDateTime is no price because the product is outdated or new */
     private final BigDecimal price;
@@ -40,6 +42,24 @@ public class PriceHistoryEntry {
                 ", price=" + price +
                 ", currency=" + currency +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PriceHistoryEntry that = (PriceHistoryEntry) o;
+        return Objects.equals(date, that.date) && Objects.equals(price, that.price) && Objects.equals(currency, that.currency);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, price, currency);
+    }
+
+    @Override
+    public int compareTo(PriceHistoryEntry o) {
+        return o.date.compareTo(this.date);
     }
 
 }

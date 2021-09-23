@@ -5,9 +5,8 @@
 
 <tags:master pageTitle="Internal Server Error">
     <h1>We are sorry</h1>
-    <h4 class="error">${pageContext.exception.message}</h4>
 
-    <h4>Try again later or contact with administrators</h4>
+    <h4>Page not found</h4>
 
     <button class="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/products'">Go back</button>
 </tags:master>

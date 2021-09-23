@@ -1,13 +1,18 @@
 package com.es.phoneshop.model.cart;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Cart {
+public class Cart implements Serializable {
 
     private final Map<Long, CartItem> items = new LinkedHashMap<>();
+
+    private int totalQuantity;
+    private BigDecimal totalPrice;
 
     public Cart() {}
 
@@ -21,6 +26,26 @@ public class Cart {
 
     public void addItem(Long id, CartItem item) {
         items.put(id, item);
+    }
+
+    public void removeItem(Long id) {
+        items.remove(id);
+    }
+
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     @Override
@@ -38,8 +63,6 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart{" +
-                "items=" + items +
-                '}';
+        return items.values().toString();
     }
 }

@@ -1,17 +1,22 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Currency;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
     private int stock;
     private String imageUrl;
 
-    private final SortedSet<PriceHistoryEntry> histories = new TreeSet<>(Comparator.comparing(PriceHistoryEntry::getDate).reversed());
+    private final SortedSet<PriceHistoryEntry> histories = new TreeSet<>();
 
     public Product() {
         this.histories.add(new PriceHistoryEntry(LocalDate.now(), null, null));

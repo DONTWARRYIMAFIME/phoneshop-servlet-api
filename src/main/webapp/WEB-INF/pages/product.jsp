@@ -6,7 +6,7 @@
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product Details">
     <p>
-       Cart: ${cart}
+        Cart: ${cart}
     </p>
     <c:if test="${empty error and not empty param.message}">
         <p class="success">
@@ -21,7 +21,7 @@
     <p>
         ${product.description}
     </p>
-    <form method="POST">
+    <form method="POST" action="${pageContext.servletContext.contextPath}/products/${product.id}">
         <table>
             <tr>
                 <td>Image</td>
@@ -43,10 +43,10 @@
                 <td>Quantity</td>
                 <td>
                     <input class="quantity" name="quantity" value="${not empty error ? param.quantity : 1}">
-                    <button>Add to cart</button>
+                    <button class="button">Add to cart</button>
                     <c:if test="${not empty error}">
                         <p class="error">
-                            ${error}
+                                ${error}
                         </p>
                     </c:if>
                 </td>
@@ -54,6 +54,6 @@
         </table>
     </form>
 
-    <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
+    <button class="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/products'">Go back</button>
     <tags:recentlyViewed viewed="${viewed}"/>
 </tags:master>

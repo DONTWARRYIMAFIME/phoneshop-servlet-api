@@ -7,5 +7,5 @@
     <h1>We are sorry</h1>
     <h4 class="error">${pageContext.exception.message}</h4>
 
-    <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
+    <button class="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/products'">Go back</button>
 </tags:master>
