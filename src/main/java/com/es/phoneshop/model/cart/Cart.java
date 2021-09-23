@@ -1,11 +1,12 @@
 package com.es.phoneshop.model.cart;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Cart {
+public class Cart implements Serializable {
 
     private final Map<Long, CartItem> items = new LinkedHashMap<>();
 
@@ -38,8 +39,6 @@ public class Cart {
 
     @Override
     public String toString() {
-        return "Cart{" +
-                "items=" + items +
-                '}';
+        return items.values().toString();
     }
 }

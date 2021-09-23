@@ -10,11 +10,11 @@
   </p>
   <form>
     <input name="query" value="${param.query}">
-    <button>Search</button>
+    <button class="button">Search</button>
   </form>
   <c:if test="${products.size() > 0}">
-  <table>
-    <thead>
+    <table>
+      <thead>
       <tr>
         <td>Image</td>
         <td>
@@ -28,24 +28,24 @@
           <tags:sortLink sort="price" order="desc" symbol="⇓"/>
         </td>
       </tr>
-    </thead>
-    <c:forEach var="product" items="${products}">
-      <tr>
-        <td>
-          <img class="product-tile" src="${product.imageUrl}" alt="Cannot load img">
-        </td>
-        <td>
+      </thead>
+      <c:forEach var="product" items="${products}">
+        <tr>
+          <td>
+            <img class="product-tile" src="${product.imageUrl}" alt="Cannot load img">
+          </td>
+          <td>
             <a href="${pageContext.servletContext.contextPath}/products/${product.id}">
-              ${product.description}
+                ${product.description}
             </a>
-        </td>
-        <td class="price tooltip">
-          <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-          <tags:tooltip description="${product.description}" histories="${product.histories}"/>
-        </td>
-      </tr>
-    </c:forEach>
-  </table>
+          </td>
+          <td class="price tooltip">
+            <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+            <tags:tooltip description="${product.description}" histories="${product.histories}"/>
+          </td>
+        </tr>
+      </c:forEach>
+    </table>
   </c:if>
   <c:if test="${products.size() == 0}">
     <p>No results were found for your search</p>

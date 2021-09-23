@@ -9,5 +9,5 @@
 
     <h4>Try again later or contact with administrators</h4>
 
-    <a class="button-back" href="${pageContext.servletContext.contextPath}/products">Go back</a>
+    <button class="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/products'">Go back</button>
 </tags:master>

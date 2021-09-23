@@ -2,9 +2,10 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.Product;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class CartItem {
+public class CartItem implements Serializable {
     private final Product product;
     private final int quantity;
 
@@ -36,10 +37,7 @@ public class CartItem {
 
     @Override
     public String toString() {
-        return "CartItem{" +
-                "product=" + product +
-                ", quantity=" + quantity +
-                '}';
+        return product.getCode() + ": " + quantity;
     }
 
 }
