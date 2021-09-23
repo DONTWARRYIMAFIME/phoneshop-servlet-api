@@ -1,6 +1,7 @@
-package com.es.phoneshop.model.product.viewed;
+package com.es.phoneshop.service.impl;
 
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.RecentlyViewedHistoryService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;

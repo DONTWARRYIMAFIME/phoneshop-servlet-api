@@ -1,6 +1,8 @@
-package com.es.phoneshop.model.product.viewed;
+package com.es.phoneshop.model.service.impl;
 
 import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.service.RecentlyViewedHistoryService;
+import com.es.phoneshop.service.impl.DefaultRecentlyViewedHistoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

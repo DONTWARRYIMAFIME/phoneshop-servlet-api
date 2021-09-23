@@ -1,11 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.sort.SortField;
-import com.es.phoneshop.model.product.sort.SortOrder;
-import com.es.phoneshop.model.product.viewed.DefaultRecentlyViewedHistoryService;
-import com.es.phoneshop.model.product.viewed.RecentlyViewedHistoryService;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.sort.SortField;
+import com.es.phoneshop.model.sort.SortOrder;
+import com.es.phoneshop.service.impl.DefaultRecentlyViewedHistoryService;
+import com.es.phoneshop.service.RecentlyViewedHistoryService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

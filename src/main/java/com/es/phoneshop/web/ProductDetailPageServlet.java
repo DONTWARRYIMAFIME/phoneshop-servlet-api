@@ -2,13 +2,13 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.exception.EntityNotFoundException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.cart.Cart;
-import com.es.phoneshop.model.product.cart.CartService;
-import com.es.phoneshop.model.product.cart.DefaultCartService;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
-import com.es.phoneshop.model.product.viewed.DefaultRecentlyViewedHistoryService;
-import com.es.phoneshop.model.product.viewed.RecentlyViewedHistoryService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.service.CartService;
+import com.es.phoneshop.service.impl.DefaultCartService;
+import com.es.phoneshop.dao.impl.ArrayListProductDao;
+import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.service.impl.DefaultRecentlyViewedHistoryService;
+import com.es.phoneshop.service.RecentlyViewedHistoryService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

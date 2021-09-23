@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.product.sort;
+package com.es.phoneshop.model.sort;
 
 import java.util.stream.Stream;
 
