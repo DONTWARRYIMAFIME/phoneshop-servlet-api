@@ -95,4 +95,14 @@ public class Product {
         return Collections.unmodifiableSet(histories);
     }
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                ", stock=" + stock +
+                '}';
+    }
+
 }

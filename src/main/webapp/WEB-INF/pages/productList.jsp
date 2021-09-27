@@ -50,4 +50,5 @@
   <c:if test="${products.size() == 0}">
     <p>No results were found for your search</p>
   </c:if>
+  <tags:recentlyViewed viewed="${viewed}"/>
 </tags:master>
