@@ -70,7 +70,8 @@
                 </tr>
             </table>
             <p>
-                <button id="update" name="update" class="button">Update</button>
+                <button class="button">Update</button>
+                <button class="button" type="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/checkout'">Checkout</button>
             </p>
         </form>
         <form id="deleteCartItem" method="POST"/>

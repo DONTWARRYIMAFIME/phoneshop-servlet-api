@@ -14,6 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultCartService implements CartService {
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
+
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
     private final Lock writeLock = lock.writeLock();
 
@@ -73,6 +74,17 @@ public class DefaultCartService implements CartService {
         writeLock.lock();
         try {
             cart.removeItem(id);
+            recalculateTotalQuantityAndPrice(cart);
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
+    @Override
+    public void clear(Cart cart) {
+        writeLock.lock();
+        try {
+            cart.clear();
             recalculateTotalQuantityAndPrice(cart);
         } finally {
             writeLock.unlock();
