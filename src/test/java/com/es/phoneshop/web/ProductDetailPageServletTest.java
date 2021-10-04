@@ -78,12 +78,10 @@ public class ProductDetailPageServletTest {
         servlet.doGet(request, response);
 
         verify(productDao, times(1)).getProduct(101L);
-        verify(cartService, times(1)).getCart(request);
         verify(viewedService, times(1)).getRecentlyViewedHistory(request);
 
         verify(request).setAttribute("viewed", viewed);
         verify(request).setAttribute("product", product);
-        verify(request).setAttribute("cart", cart);
     }
 
     @Test

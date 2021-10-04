@@ -37,10 +37,9 @@ public class ProductDetailPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Product product = getProductByPathParamId(request);
-        Cart cart = cartService.getCart(request);
         LinkedList<Product> viewed = viewedService.getRecentlyViewedHistory(request);
         viewedService.addProduct(viewed, product);
-        doForward(viewed, cart, product, request, response);
+        doForward(viewed, product, request, response);
     }
 
     @Override
@@ -59,10 +58,10 @@ public class ProductDetailPageServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/products/" + product.getId() + "?message=Added to cart successfully");
         } catch (ParseException e) {
             request.setAttribute("error", "Not a number");
-            doForward(viewed, cart, product, request, response);
+            doForward(viewed, product, request, response);
         } catch (IllegalArgumentException e) {
             request.setAttribute("error", e.getMessage());
-            doForward(viewed, cart, product, request, response);
+            doForward(viewed, product, request, response);
         }
 
     }
@@ -77,9 +76,8 @@ public class ProductDetailPageServlet extends HttpServlet {
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
     }
 
-    private void doForward(Deque<Product> viewed, Cart cart, Product product, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void doForward(Deque<Product> viewed, Product product, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("viewed", viewed);
-        request.setAttribute("cart", cart);
         request.setAttribute("product", product);
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }

@@ -15,6 +15,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -39,15 +40,16 @@ public class DefaultCartServiceTest {
 
     private static final String ATTRIBUTE_NAME = DefaultCartService.class.getName() + ".cart";
 
-    private void setupProduct(Product product, Long id, int stock) {
+    private void setupProduct(Product product, Long id, int stock, BigDecimal price) {
         when(product.getId()).thenReturn(id);
         when(product.getStock()).thenReturn(stock);
+        when(product.getPrice()).thenReturn(price);
     }
 
     @Before
     public void setup() {
-        setupProduct(product1, 101L, 101);
-        setupProduct(product2, 102L, 102);
+        setupProduct(product1, 101L, 101, BigDecimal.valueOf(101));
+        setupProduct(product2, 102L, 102, BigDecimal.valueOf(102));
     }
 
     @Test
@@ -97,5 +99,23 @@ public class DefaultCartServiceTest {
     public void testAddToCartProductWithInvalidQuantity() {
         cartService.add(cart, product1, 0);
     }
+
+    @Test
+    public void testUpdateCartCorrectly() {
+        Cart cart = new Cart(Map.of(product1.getId(), new CartItem(product1, 5)));
+        cartService.update(cart, product1, 8);
+        assertEquals(8, cart.getItems().get(product1.getId()).getQuantity());
+    }
+
+    @Test(expected = OutOfStockException.class)
+    public void testUpdateCartWithTooMuchProducts() {
+        cartService.update(cart, product1, 102);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateCartWithInvalidQuantity() {
+        cartService.update(cart, product1, 0);
+    }
+
 
 }
