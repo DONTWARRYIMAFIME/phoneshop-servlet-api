@@ -6,20 +6,35 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class CartItem implements Serializable {
-    private final Product product;
-    private final int quantity;
+    private Product product;
+    private int quantity;
+
+    public CartItem() {}
 
     public CartItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
+    public CartItem(CartItem cartItem) {
+        this.product = cartItem.getProduct();
+        this.quantity = cartItem.getQuantity();
+    }
+
     public Product getProduct() {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -37,7 +52,7 @@ public class CartItem implements Serializable {
 
     @Override
     public String toString() {
-        return product.getCode() + ": " + quantity;
+        return product != null ? product.getCode() : "code" + ": " + quantity;
     }
 
 }

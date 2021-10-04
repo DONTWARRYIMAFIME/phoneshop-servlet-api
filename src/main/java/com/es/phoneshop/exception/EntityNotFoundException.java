@@ -6,4 +6,8 @@ public class EntityNotFoundException extends IllegalArgumentException {
         super(entity + " with ID: " + id + " not found");
     }
 
+    public EntityNotFoundException(String message) {
+        super(message);
+    }
+
 }

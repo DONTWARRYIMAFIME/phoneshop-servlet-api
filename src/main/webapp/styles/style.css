@@ -87,3 +87,18 @@ footer {
   align-items: center;
   text-align: center;
 }
+
+.required:after {
+  content: "*";
+  color: #f00;
+}
+
+input {
+  width: 100%;
+  max-width: 210px;
+}
+
+select {
+  width: 100%;
+  max-width: 210px;
+}

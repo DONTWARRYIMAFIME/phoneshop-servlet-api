@@ -5,30 +5,17 @@ import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.sort.SortField;
 import com.es.phoneshop.model.sort.SortOrder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends ArrayListGenericDao<Product> implements ProductDao {
 
-    private long maxId;
-    private List<Product> products;
-
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
-    private final Lock writeLock = lock.writeLock();
-    private final Lock readLock = lock.readLock();
-
-    private ArrayListProductDao() {
-        products = new ArrayList<>();
-    }
+    private ArrayListProductDao() {}
 
     public static ProductDao getInstance() {
         return Holder.productDao;
@@ -40,26 +27,14 @@ public class ArrayListProductDao implements ProductDao {
 
     @Override
     public Optional<Product> getProduct(Long id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-
-        readLock.lock();
-        try {
-            return products
-                    .stream()
-                    .filter(product -> Objects.equals(product.getId(), id))
-                    .findAny();
-        } finally {
-            readLock.unlock();
-        }
+        return super.find(id);
     }
 
     @Override
     public List<Product> findProducts() {
         readLock.lock();
         try {
-            return products
+            return super.findAll()
                     .stream()
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
@@ -119,48 +94,6 @@ public class ArrayListProductDao implements ProductDao {
                     .collect(Collectors.toList());
         } finally {
             readLock.unlock();
-        }
-    }
-
-    @Override
-    public void save(Product product) {
-        getProduct(product.getId())
-                .ifPresent(oldProduct -> update(oldProduct, product));
-
-        writeLock.lock();
-        try {
-            if (product.getId() == null) {
-                product.setId(++maxId);
-            } else if (product.getId() > maxId) {
-                maxId = product.getId();
-            }
-            products.add(product);
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    private void update(Product oldProduct, Product product) {
-        writeLock.lock();
-        try {
-            oldProduct.setCode(product.getCode());
-            oldProduct.setDescription(product.getDescription());
-            oldProduct.setPrice(product.getPrice());
-            oldProduct.setCurrency(product.getCurrency());
-            oldProduct.setStock(product.getStock());
-            oldProduct.setImageUrl(product.getImageUrl());
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public void delete(Long id) {
-        writeLock.lock();
-        try {
-            products.removeIf(product -> Objects.equals(id, product.getId()));
-        } finally {
-            writeLock.unlock();
         }
     }
 
