@@ -4,8 +4,6 @@ import com.es.phoneshop.model.order.Order;
 
 import java.util.Optional;
 
-public interface OrderDao {
-    Optional<Order> getOrder(Long id);
+public interface OrderDao extends GenericDao<Order> {
     Optional<Order> getOrderBySecureId(String secureId);
-    void save(Order order);
 }

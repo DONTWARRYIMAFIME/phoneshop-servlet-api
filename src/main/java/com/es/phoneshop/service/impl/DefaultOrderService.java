@@ -75,7 +75,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     private void updateProductsStock(Order order) {
-        order.getItems().forEach((k, v) -> productDao.getProduct(k).ifPresent(p -> {
+        order.getItems().forEach((k, v) -> productDao.find(k).ifPresent(p -> {
             p.setStock(p.getStock() - v.getQuantity());
             productDao.save(p);
         }));

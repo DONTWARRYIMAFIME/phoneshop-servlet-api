@@ -88,16 +88,16 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testFindProductWithCorrectId() {
-        assertNotNull(productDao.getProduct(101L));
-        assertNotNull(productDao.getProduct(102L));
-        assertNotNull(productDao.getProduct(103L));
-        assertNotNull(productDao.getProduct(104L));
-        assertNotNull(productDao.getProduct(105L));
+        assertNotNull(productDao.find(101L));
+        assertNotNull(productDao.find(102L));
+        assertNotNull(productDao.find(103L));
+        assertNotNull(productDao.find(104L));
+        assertNotNull(productDao.find(105L));
     }
 
     @Test
     public void testFindProductWithIncorrectId() {
-        assertEquals(Optional.empty(), productDao.getProduct(-15L));
+        assertEquals(Optional.empty(), productDao.find(-15L));
     }
 
     @Test

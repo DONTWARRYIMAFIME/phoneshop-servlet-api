@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,11 +22,6 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
 
     private static class Holder {
         private static final ProductDao productDao = new ArrayListProductDao();
-    }
-
-    @Override
-    public Optional<Product> getProduct(Long id) {
-        return super.find(id);
     }
 
     @Override

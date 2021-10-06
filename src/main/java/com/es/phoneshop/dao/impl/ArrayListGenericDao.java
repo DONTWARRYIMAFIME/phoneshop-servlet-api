@@ -4,6 +4,7 @@ import com.es.phoneshop.model.Entity;
 import com.es.phoneshop.dao.GenericDao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
@@ -65,7 +66,7 @@ public abstract class ArrayListGenericDao<T extends Entity> implements GenericDa
     public List<T> findAll() {
         readLock.lock();
         try {
-            return entities;
+            return Collections.unmodifiableList(entities);
         } finally {
             readLock.unlock();
         }

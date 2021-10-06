@@ -6,7 +6,6 @@ import com.es.phoneshop.model.cart.Cart;
 import com.es.phoneshop.service.CartService;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.service.RecentlyViewedHistoryService;
-import com.es.phoneshop.web.servlet.ProductDetailPageServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +55,7 @@ public class ProductDetailPageServletTest {
     public void setup(){
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getPathInfo()).thenReturn("/101");
-        when(productDao.getProduct(101L)).thenReturn(Optional.of(product));
+        when(productDao.find(101L)).thenReturn(Optional.of(product));
         when(cartService.getCart(request)).thenReturn(cart);
         when(viewedService.getRecentlyViewedHistory(request)).thenReturn(viewed);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
@@ -78,7 +77,7 @@ public class ProductDetailPageServletTest {
     public void testGetProductWithCorrectPathParam() throws ServletException, IOException {
         servlet.doGet(request, response);
 
-        verify(productDao, times(1)).getProduct(101L);
+        verify(productDao, times(1)).find(101L);
         verify(viewedService, times(1)).getRecentlyViewedHistory(request);
 
         verify(request).setAttribute("viewed", viewed);

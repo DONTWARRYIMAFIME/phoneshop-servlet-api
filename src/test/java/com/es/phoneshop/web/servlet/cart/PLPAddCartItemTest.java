@@ -46,7 +46,7 @@ public class PLPAddCartItemTest {
     @Before
     public void setup() {
         when(request.getPathInfo()).thenReturn("/101");
-        when(productDao.getProduct(101L)).thenReturn(Optional.of(product));
+        when(productDao.find(101L)).thenReturn(Optional.of(product));
         when(cartService.getCart(request)).thenReturn(cart);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
     }

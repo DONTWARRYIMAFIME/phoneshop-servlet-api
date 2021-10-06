@@ -69,7 +69,7 @@ public class CartPageServlet extends HttpServlet {
     private Product getProductById(String productId) {
         Long id = Long.parseLong(productId);
         return productDao
-                .getProduct(id)
+                .find(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
     }
 

@@ -72,7 +72,7 @@ public class ProductDetailPageServlet extends HttpServlet {
 
         Long id = Long.parseLong(pathParams[1]);
         return productDao
-                .getProduct(id)
+                .find(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
     }
 

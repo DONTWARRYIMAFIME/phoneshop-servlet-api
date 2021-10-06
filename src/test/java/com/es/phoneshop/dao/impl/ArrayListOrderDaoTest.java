@@ -31,31 +31,17 @@ public class ArrayListOrderDaoTest {
     @InjectMocks
     private final OrderDao orderDao = ArrayListOrderDao.getInstance();
 
-    private void setupOrder(Order order, Long id, String secureId) {
-        when(order.getId()).thenReturn(id);
+    private void setupOrder(Order order, String secureId) {
         when(order.getSecureId()).thenReturn(secureId);
     }
 
     @Before
     public void setup() {
-        setupOrder(order1, 101L, "secure-id-101");
-        setupOrder(order2, 102L, "secure-id-102");
-        setupOrder(order3, 103L, "secure-id-103");
+        setupOrder(order1, "secure-id-101");
+        setupOrder(order2, "secure-id-102");
+        setupOrder(order3, "secure-id-103");
 
         orders.addAll(List.of(order1, order2, order3));
-    }
-
-    @Test
-    public void testGetOrderWithCorrectId() {
-        assertEquals(Optional.of(order1), orderDao.getOrder(order1.getId()));
-        assertEquals(Optional.of(order2), orderDao.getOrder(order2.getId()));
-        assertEquals(Optional.of(order3), orderDao.getOrder(order3.getId()));
-    }
-
-    @Test
-    public void testGetOrderWithIncorrectId() {
-        Optional<Order> order = orderDao.getOrder(-5L);
-        assertFalse(order.isPresent());
     }
 
     @Test

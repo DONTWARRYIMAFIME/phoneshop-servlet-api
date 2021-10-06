@@ -57,7 +57,7 @@ public class PLPAddCartItemServlet extends HttpServlet  {
 
         Long id = Long.parseLong(pathParams[pathParams.length - 1]);
         return productDao
-                .getProduct(id)
+                .find(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product", id));
     }
 

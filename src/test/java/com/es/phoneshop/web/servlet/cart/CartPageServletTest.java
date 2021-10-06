@@ -57,9 +57,9 @@ public class CartPageServletTest {
         when(cartService.getCart(request)).thenReturn(cart);
         when(request.getLocale()).thenReturn(Locale.ENGLISH);
 
-        when(productDao.getProduct(101L)).thenReturn(Optional.of(product1));
-        when(productDao.getProduct(102L)).thenReturn(Optional.of(product2));
-        when(productDao.getProduct(103L)).thenReturn(Optional.of(product3));
+        when(productDao.find(101L)).thenReturn(Optional.of(product1));
+        when(productDao.find(102L)).thenReturn(Optional.of(product2));
+        when(productDao.find(103L)).thenReturn(Optional.of(product3));
 
         when(product1.getId()).thenReturn(101L);
         when(product1.getId()).thenReturn(102L);

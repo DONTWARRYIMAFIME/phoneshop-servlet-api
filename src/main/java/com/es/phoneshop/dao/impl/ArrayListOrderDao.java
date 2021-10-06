@@ -18,11 +18,6 @@ public class ArrayListOrderDao extends ArrayListGenericDao<Order> implements Ord
     }
 
     @Override
-    public Optional<Order> getOrder(Long id) {
-        return super.find(id);
-    }
-
-    @Override
     public Optional<Order> getOrderBySecureId(String secureId) {
         readLock.lock();
         try {
