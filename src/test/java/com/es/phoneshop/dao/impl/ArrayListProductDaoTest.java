@@ -48,21 +48,22 @@ public class ArrayListProductDaoTest {
     @InjectMocks
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
-    private void setupProduct(Product product, Long id, String description, BigDecimal price, int stock) {
+    private void setupProduct(Product product, Long id, String description, String code, BigDecimal price, int stock) {
         when(product.getId()).thenReturn(id);
         when(product.getDescription()).thenReturn(description);
+        when(product.getCode()).thenReturn(code);
         when(product.getPrice()).thenReturn(price);
         when(product.getStock()).thenReturn(stock);
     }
 
     @Before
     public void setup() {
-        setupProduct(product1, 101L, "Samsung S", BigDecimal.valueOf(101L), 101);
-        setupProduct(product2, 102L, "Samsung", BigDecimal.valueOf(102L), 102);
-        setupProduct(product3, 103L, "Samsung S 20", BigDecimal.valueOf(103L), 103);
-        setupProduct(product4, 104L, "Iphone X", BigDecimal.valueOf(104L), 104);
-        setupProduct(product5, 105L, "Xiaomi MI 6", BigDecimal.valueOf(105L), 105);
-        setupProduct(product6, 106L, "Out of stock phone", BigDecimal.valueOf(106L), 0);
+        setupProduct(product1, 101L, "Samsung S", "sms", BigDecimal.valueOf(101L), 101);
+        setupProduct(product2, 102L, "Samsung", "sm", BigDecimal.valueOf(102L), 102);
+        setupProduct(product3, 103L, "Samsung S 20", "sms20",BigDecimal.valueOf(103L), 103);
+        setupProduct(product4, 104L, "Iphone X", "ipx", BigDecimal.valueOf(104L), 104);
+        setupProduct(product5, 105L, "Xiaomi MI 6", "mi6", BigDecimal.valueOf(105L), 105);
+        setupProduct(product6, 106L, "Out of stock phone", "none", BigDecimal.valueOf(106L), 0);
         products.addAll(List.of(product1, product2, product3, product4, product5, product6));
     }
 
@@ -133,7 +134,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testFilterByQueryAnyWords() {
+    public void testFilterByAnyWords() {
         SearchStructure searchStructure = new SearchStructure();
         searchStructure.setQuery("s 20");
 
@@ -144,15 +145,26 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testFilterByQueryAllWords() {
+    public void testFilterByAllWords() {
         SearchStructure searchStructure = new SearchStructure();
         searchStructure.setQuery("Samsung");
-        searchStructure.setSearchMode(SearchMode.ALL_WORDS);
+        searchStructure.setSearchMode(SearchMode.ALL_WORD);
 
         List<Product> products = productDao.findProducts(searchStructure);
 
         assertEquals(1, products.size());
         assertEquals(List.of(product2), products);
+    }
+
+    @Test
+    public void testFilterByCode() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setCode("sms");
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product1, product3), products);
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.es.phoneshop.web.servlet;
 
 import com.es.phoneshop.dao.ProductDao;
-import com.es.phoneshop.model.search.SearchMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -50,19 +48,20 @@ public class AdvancedSearchPageServletTest {
 
     @Test
     public void testSecondDoGet() throws ServletException, IOException {
-        when(request.getParameter("seen")).thenReturn("true");
+        when(request.getParameterMap()).thenReturn(Map.of("query", new String[]{"smth"}));
 
         servlet.doGet(request, response);
 
+        verify(request, times(1)).setAttribute(eq("searchModes"), any());
         verify(request, times(1)).setAttribute("products", productDao.findProducts(any()));
         verify(requestDispatcher, times(1)).forward(request, response);
     }
 
     @Test
     public void testDoGetWithCorrectParams() throws ServletException, IOException {
+        when(request.getParameterMap()).thenReturn(Map.of("minStock", new String[]{"10"}, "maxStock", new String[]{"50"}));
         when(request.getParameter("minStock")).thenReturn("10");
         when(request.getParameter("maxStock")).thenReturn("50");
-        when(request.getParameter("seen")).thenReturn("true");
 
         servlet.doGet(request, response);
 
@@ -74,9 +73,9 @@ public class AdvancedSearchPageServletTest {
 
     @Test
     public void testDoGetWithIncorrectParams() throws ServletException, IOException {
+        when(request.getParameterMap()).thenReturn(Map.of("minStock", new String[]{"10"}, "maxStock", new String[]{"eee"}));
         when(request.getParameter("maxStock")).thenReturn("eee");
         when(request.getParameter("minStock")).thenReturn("10");
-        when(request.getParameter("seen")).thenReturn("true");
 
         servlet.doGet(request, response);
 

@@ -5,13 +5,22 @@ import java.util.Optional;
 
 public class SearchStructure {
     private String query;
-    private SearchMode searchMode;
     private SortField sortField;
     private SortOrder sortOrder;
+    private SearchMode searchMode;
+    private String code;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
     private int minStock;
     private int maxStock;
+
+    public SearchStructure() {}
+
+    public SearchStructure(String query, SortField sortField, SortOrder sortOrder) {
+        this.query = query;
+        this.sortField = sortField;
+        this.sortOrder = sortOrder;
+    }
 
     public String getQuery() {
         return query;
@@ -19,14 +28,6 @@ public class SearchStructure {
 
     public void setQuery(String query) {
         this.query = query;
-    }
-
-    public SearchMode getSearchMode() {
-        return searchMode;
-    }
-
-    public void setSearchMode(SearchMode searchMode) {
-        this.searchMode = searchMode;
     }
 
     public SortField getSortField() {
@@ -43,6 +44,22 @@ public class SearchStructure {
 
     public void setSortOrder(SortOrder sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public SearchMode getSearchMode() {
+        return searchMode;
+    }
+
+    public void setSearchMode(SearchMode searchMode) {
+        this.searchMode = searchMode;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public BigDecimal getMinPrice() {

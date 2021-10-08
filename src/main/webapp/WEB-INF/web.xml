@@ -101,7 +101,7 @@
 
   <servlet-mapping>
     <servlet-name>advancedSearch</servlet-name>
-    <url-pattern>/advancedSearch</url-pattern>
+    <url-pattern>/search</url-pattern>
   </servlet-mapping>
 
   <filter>

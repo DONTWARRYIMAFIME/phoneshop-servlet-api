@@ -41,6 +41,7 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
             if (searchStructure != null) {
                 searchedProducts = filterByQuery(searchedProducts, searchStructure.getSearchMode(), searchStructure.getQuery());
                 searchedProducts = sortProducts(searchedProducts, searchStructure.getSortField(), searchStructure.getSortOrder());
+                searchedProducts = filterByCode(searchedProducts, searchStructure.getCode());
                 searchedProducts = filterByMinPrice(searchedProducts, searchStructure.getMinPrice());
                 searchedProducts = filterByMaxPrice(searchedProducts, searchStructure.getMaxPrice());
                 searchedProducts = filterByMinStock(searchedProducts, searchStructure.getMinStock());
@@ -66,21 +67,32 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
             return products;
         }
 
-        if (searchMode == SearchMode.ALL_WORDS) {
-            return filterByQueryAllWords(products, query);
+        if (searchMode == SearchMode.ALL_WORD) {
+            return filterByAllWord(products, query);
         } else {
-            return filterByQueryAnyWords(products, query);
+            return filterByAnyWords(products, query);
         }
     }
 
-    private List<Product> filterByQueryAllWords(List<Product> products, String query) {
+    private List<Product> filterByCode(List<Product> products, String code) {
+        if (code == null) {
+            return products;
+        }
+
+        return products
+                .stream()
+                .filter(product -> product.getCode().toUpperCase(Locale.ROOT).contains(code.toUpperCase(Locale.ROOT)))
+                .collect(Collectors.toList());
+    }
+
+    private List<Product> filterByAllWord(List<Product> products, String query) {
         return products
                 .stream()
                 .filter(product -> query.equalsIgnoreCase(product.getDescription()))
                 .collect(Collectors.toList());
     }
 
-    private List<Product> filterByQueryAnyWords(List<Product> products, String query) {
+    private List<Product> filterByAnyWords(List<Product> products, String query) {
         String[] queries = query.toUpperCase(Locale.ROOT).split("\\s+");
 
         Function<Product, Long> countMatchesFunction = p -> Arrays
@@ -110,7 +122,6 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
                 .stream()
                 .sorted(comparator)
                 .collect(Collectors.toList());
-
     }
 
     private List<Product> filterByMinPrice(List<Product> products, BigDecimal minPrice) {
@@ -122,7 +133,6 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
                 .stream()
                 .filter(product -> minPrice.compareTo(product.getPrice()) <= 0)
                 .collect(Collectors.toList());
-
     }
 
     private List<Product> filterByMaxPrice(List<Product> products, BigDecimal maxPrice) {
@@ -159,3 +169,4 @@ public class ArrayListProductDao extends ArrayListGenericDao<Product> implements
     }
 
 }
+

@@ -28,20 +28,23 @@ public class AdvancedSearchPageServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         SearchStructure searchStructure = new SearchStructure();
-        Map<String, String> errors = new HashMap<>();
 
-        setRequiredParameter(request, "query", errors, String::toString, searchStructure::setQuery);
-        setRequiredParameter(request, "searchMode", errors, SearchMode::valueOf, searchStructure::setSearchMode);
-        setRequiredParameter(request, "minPrice", errors, BigDecimal::new, searchStructure::setMinPrice);
-        setRequiredParameter(request, "maxPrice", errors, BigDecimal::new, searchStructure::setMaxPrice);
-        setRequiredParameter(request, "minStock", errors, Integer::parseInt, searchStructure::setMinStock);
-        setRequiredParameter(request, "maxStock", errors, Integer::parseInt, searchStructure::setMaxStock);
 
-        if (request.getParameter("seen") != null) {
+        if (!request.getParameterMap().isEmpty()) {
+            Map<String, String> errors = new HashMap<>();
+
+            setRequiredParameter(request, "query", errors, String::toString, searchStructure::setQuery);
+            setRequiredParameter(request, "searchMode", errors, SearchMode::valueOf, searchStructure::setSearchMode);
+            setRequiredParameter(request, "code", errors, String::toString, searchStructure::setCode);
+            setRequiredParameter(request, "minPrice", errors, BigDecimal::new, searchStructure::setMinPrice);
+            setRequiredParameter(request, "maxPrice", errors, BigDecimal::new, searchStructure::setMaxPrice);
+            setRequiredParameter(request, "minStock", errors, Integer::parseInt, searchStructure::setMinStock);
+            setRequiredParameter(request, "maxStock", errors, Integer::parseInt, searchStructure::setMaxStock);
+
+            request.setAttribute("errors", errors);
             request.setAttribute("products", productDao.findProducts(searchStructure));
         }
 
-        request.setAttribute("errors", errors);
         request.setAttribute("searchModes", SearchMode.values());
         request.getRequestDispatcher("WEB-INF/pages/search.jsp").forward(request, response);
     }
