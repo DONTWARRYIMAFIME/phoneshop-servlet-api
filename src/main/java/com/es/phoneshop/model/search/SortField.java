@@ -1,4 +1,4 @@
-package com.es.phoneshop.model.sort;
+package com.es.phoneshop.model.search;
 
 import com.es.phoneshop.model.product.Product;
 

@@ -1,9 +1,8 @@
 package com.es.phoneshop.web.servlet;
 
-import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.dao.ProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.service.RecentlyViewedHistoryService;
-import com.es.phoneshop.web.servlet.ProductListPageServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductListPageServletTest {
@@ -44,9 +42,9 @@ public class ProductListPageServletTest {
     private final ProductListPageServlet servlet = new ProductListPageServlet();
 
     @Before
-    public void setup(){
+    public void setup() {
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
-        when(productDao.findProducts(null, null, null)).thenReturn(List.of(product));
+        when(productDao.findProducts(any())).thenReturn(List.of(product));
         when(viewedService.getRecentlyViewedHistory(request)).thenReturn(viewed);
     }
 

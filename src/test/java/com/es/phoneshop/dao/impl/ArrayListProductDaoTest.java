@@ -2,8 +2,10 @@ package com.es.phoneshop.dao.impl;
 
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.sort.SortField;
-import com.es.phoneshop.model.sort.SortOrder;
+import com.es.phoneshop.model.search.SearchMode;
+import com.es.phoneshop.model.search.SearchStructure;
+import com.es.phoneshop.model.search.SortField;
+import com.es.phoneshop.model.search.SortOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,21 +48,22 @@ public class ArrayListProductDaoTest {
     @InjectMocks
     private ProductDao productDao = ArrayListProductDao.getInstance();
 
-    private void setupProduct(Product product, Long id, String description, BigDecimal price, int stock) {
+    private void setupProduct(Product product, Long id, String description, String code, BigDecimal price, int stock) {
         when(product.getId()).thenReturn(id);
         when(product.getDescription()).thenReturn(description);
+        when(product.getCode()).thenReturn(code);
         when(product.getPrice()).thenReturn(price);
         when(product.getStock()).thenReturn(stock);
     }
 
     @Before
     public void setup() {
-        setupProduct(product1, 101L, "Samsung S", BigDecimal.valueOf(101L), 101);
-        setupProduct(product2, 102L, "Samsung", BigDecimal.valueOf(102L), 102);
-        setupProduct(product3, 103L, "Samsung S 20", BigDecimal.valueOf(103L), 103);
-        setupProduct(product4, 104L, "Iphone X", BigDecimal.valueOf(104L), 104);
-        setupProduct(product5, 105L, "Xiaomi MI 6", BigDecimal.valueOf(105L), 105);
-        setupProduct(product6, 106L, "Out of stock phone", BigDecimal.valueOf(106L), 0);
+        setupProduct(product1, 101L, "Samsung S", "sms", BigDecimal.valueOf(101L), 101);
+        setupProduct(product2, 102L, "Samsung", "sm", BigDecimal.valueOf(102L), 102);
+        setupProduct(product3, 103L, "Samsung S 20", "sms20",BigDecimal.valueOf(103L), 103);
+        setupProduct(product4, 104L, "Iphone X", "ipx", BigDecimal.valueOf(104L), 104);
+        setupProduct(product5, 105L, "Xiaomi MI 6", "mi6", BigDecimal.valueOf(105L), 105);
+        setupProduct(product6, 106L, "Out of stock phone", "none", BigDecimal.valueOf(106L), 0);
         products.addAll(List.of(product1, product2, product3, product4, product5, product6));
     }
 
@@ -102,8 +105,11 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testDescriptionAscSort() {
-        List<Product> products = productDao
-                .findProducts(null, SortField.DESCRIPTION, SortOrder.ASC);
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setSortField(SortField.DESCRIPTION);
+        searchStructure.setSortOrder(SortOrder.ASC);
+
+        List<Product> products = productDao.findProducts(searchStructure);
 
         assertEquals("Iphone X", products.get(0).getDescription());
         assertEquals("Samsung", products.get(1).getDescription());
@@ -114,8 +120,11 @@ public class ArrayListProductDaoTest {
 
     @Test
     public void testPriceDescSort() {
-        List<Product> products = productDao
-                .findProducts(null, SortField.PRICE, SortOrder.DESC);
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setSortField(SortField.PRICE);
+        searchStructure.setSortOrder(SortOrder.DESC);
+
+        List<Product> products = productDao.findProducts(searchStructure);
 
         assertEquals(BigDecimal.valueOf(105), products.get(0).getPrice());
         assertEquals(BigDecimal.valueOf(104), products.get(1).getPrice());
@@ -125,18 +134,81 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testFilter() {
-        String query = "s 20";
-        List<Product> products = productDao
-                .findProducts(query, null, null);
+    public void testFilterByAnyWords() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setQuery("s 20");
 
-        System.out.println(products);
+        List<Product> products = productDao.findProducts(searchStructure);
 
         assertEquals(3, products.size());
+        assertEquals(List.of(product3, product1, product2), products);
+    }
 
-        assertEquals(product3, products.get(0));
-        assertEquals(product1, products.get(1));
-        assertEquals(product2, products.get(2));
+    @Test
+    public void testFilterByAllWords() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setQuery("Samsung");
+        searchStructure.setSearchMode(SearchMode.ALL_WORD);
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(1, products.size());
+        assertEquals(List.of(product2), products);
+    }
+
+    @Test
+    public void testFilterByCode() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setCode("sms");
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product1, product3), products);
+    }
+
+    @Test
+    public void testFilterByMinPrice() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setMinPrice(BigDecimal.valueOf(104));
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product4, product5), products);
+    }
+
+    @Test
+    public void testFilterByMaxPrice() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setMaxPrice(BigDecimal.valueOf(102));
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product1, product2), products);
+    }
+
+    @Test
+    public void testFilterByMinStock() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setMinStock(104);
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product4, product5), products);
+    }
+
+    @Test
+    public void testFilterByMaxStock() {
+        SearchStructure searchStructure = new SearchStructure();
+        searchStructure.setMaxStock(102);
+
+        List<Product> products = productDao.findProducts(searchStructure);
+
+        assertEquals(2, products.size());
+        assertEquals(List.of(product1, product2), products);
     }
 
     @Test

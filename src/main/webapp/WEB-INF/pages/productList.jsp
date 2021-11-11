@@ -11,6 +11,7 @@
   <form>
     <input name="query" value="${param.query}">
     <button class="button">Search</button>
+    <button type="button" class="button" onClick="javascript:window.location='${pageContext.servletContext.contextPath}/search'">More filters</button>
   </form>
   <c:if test="${empty param.error and not empty param.message}">
     <p class="success">
